@@ -1,6 +1,7 @@
 package 문제;
 
-import java.util.ArrayList;
+
+import java.util.Stack;
 
 /*문제 설명
 햄버거 가게에서 일을 하는 상수는 햄버거를 포장하는 일을 합니다. 함께 일을 하는 다른 직원들이 햄버거에 들어갈 재료를 조리해 주면
@@ -24,38 +25,34 @@ ingredient	                result
 
 발상:
 1.배열 -> 리스트, 리스트에서 하나씩 꺼내 1,2,3,1 연속한 것 찾고 찾으면 리스트에서 삭제
+
+타임라인
+1. 시간 초과 -> 로직 변경 필요
+2. 스택을 이용해서 데이터를 저장과 동시에 1231 인지 확인되면 pop 기존 로직은 리스트로 변환 후 접근 -> 스택으로 쌓는 중에 1231 빼기
 */
 class Solution65{
     public static int solution(int[] ingredient){
         int answer = 0;
         // 배열을 리스트로
-        ArrayList<Integer>ingredientList = new ArrayList<>();
+        Stack<Integer>ingredientStack = new Stack<>();
         for (int element : ingredient) {
-            ingredientList.add(element);
-        }
-        mainloop:
-        while(true){
-            if(ingredientList.size() < 4){
-                break;
-            }
-            for (int i = 0; i < ingredientList.size()-3; i++) {
-                int bread1 = ingredientList.get(i);
-                int vege = ingredientList.get(i+1);
-                int meat = ingredientList.get(i+2);
-                int bread2 = ingredientList.get(i+3);
-                if(bread1 == 1 && vege == 2&& meat ==3 && bread2 ==1){
-                    for (int j = 0; j < 4; j++) {
-                        ingredientList.remove(i);
-                    }
+            ingredientStack.push(element);
+            if(ingredientStack.size()>=4){ // stack 에 요소 4개 이상일 때
+                int tatget1 = ingredientStack.pop(); // 1
+                int tatget2 = ingredientStack.pop(); // 3
+                int tatget3 = ingredientStack.pop(); // 2
+                int tatget4 = ingredientStack.pop(); // 1
+                if(!(tatget1 == 1 && tatget2==3 && tatget3==2 && tatget4 == 1)){// 1231 아닐 때
+                    ingredientStack.push(tatget4);
+                    ingredientStack.push(tatget3);
+                    ingredientStack.push(tatget2);
+                    ingredientStack.push(tatget1);
+                }else { // 1231 일 때
                     answer+=1;
-                    break;
-                }
-                if(i == ingredientList.size()-4){// 이전 if 문에 들어가지 못했는데 i가 마지막인 상황 루프 종료
-                    break mainloop;
                 }
             }
-
         }
+
         return answer;
     }
 }
