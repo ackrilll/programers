@@ -26,74 +26,63 @@ players	                                callings	                    result
 타임라인
 1. 최종 인덱스로 접근하면 겹치는 것이 생김 -> 계속 자리 갱신해줘야함
 2. 런타임 에러 -> 해쉬맵 사용해보기
-3. LinkedHashMap 에서 특정 키 값의 이전 키 값이 필요한 상황 발생 -> 밸류 값으로 이전 키값 알아내기
+3. HashMap 에서 특정 키 값의 이전 키 값이 필요한 상황 발생 -> 밸류 값으로 이전 키값 알아내기
 */
 class Solution69{
-    public static String getPreKey(LinkedHashMap <String, Integer> LinkedHashMap,String key){
-        String answer;
-        int value = LinkedHashMap.get(key);
-        int prevalue = value -1;
-
-        LinkedHashMap.;
-
-        return answer;
+    // 불려진 이름 인덱스 감소하기 전에 실행되는 메서드 매개변수로 받은 키의 밸류 -1 를 밸류로 가지는 키 반환
+    public static String getPreKey(HashMap <String, Integer> hashMap,String calledKey){
+        int calledValue = hashMap.get(calledKey);
+        int preValue = calledValue -1;
+        for(String tempKey : hashMap.keySet()){
+            if(hashMap.get(tempKey) == preValue){
+                return tempKey;
+            }
+        }
+        return null;
     }
 
-    public static String[] solution(String[] players, String[] callings){
-        String [] answer = new String[players.length];
-        LinkedHashMap <String, Integer> playerHashMap = new LinkedHashMap<>();
+    public static String getKeyFromValue(HashMap <String, Integer> hashMap,int value){
+        for(String tempKey : hashMap.keySet()){
+            if(hashMap.get(tempKey) == value){
+                return tempKey;
+            }
+        }
+        return null;
+    }
+
+    public static String[] solution(String[] players, String[] callings) {
+        String[] answer = new String[players.length];
+        HashMap<String, Integer> playerHashMap = new HashMap<>();
         for (int i = 0; i < players.length; i++) { // 해쉬맵 채우기 (이름, 인덱스)
             String name = players[i];
             playerHashMap.put(name, i);
         }
+
         Deque<String> deque = new ArrayDeque<>();
         // callings 데크로 만들기
-        for (String call : callings){
+        for (String call : callings) {
             deque.add(call);
         }
-        for (int i = 0; i < deque.size(); i++) {
+        for (int i = 0; i < callings.length; i++) {
             String calledName = deque.poll();
-            playerHashMap.replace(calledName,playerHashMap.get(calledName)-1);
-            playerHashMap.replace(getK. ,);
-
+            String lateName = getPreKey(playerHashMap, calledName);
+            playerHashMap.replace(calledName, playerHashMap.get(calledName) - 1);
+            playerHashMap.replace(lateName, playerHashMap.get(lateName) + 1);
         }
-
-
-
-        // 인덱스 배열 만들기
-        int[] indexArr = new int[players.length];
-        for (int i = 0; i < players.length; i++) {
-            indexArr[i] = i;
-        }// 불려진 이름 index 값 -> 불려진 이름의 index 값
-        for (String call : callings){
-            int calledIdx = getIdx(players,call);
-            indexArr[calledIdx]--;
-            indexArr[calledIdx-1]++;
-            // indexArr 에 각 단어의 인덱스가 저장되어 있음
-            for (int i = 0; i < players.length; i++) {
-                String target = players[i];
-                answer[indexArr[i]] = target;}
-            players = answer.clone(); // 배열 초기화
-            for (int i = 0; i < players.length; i++) { // 인덱스 배열 초기화
-                indexArr[i] = i;
-            }
+        for (int j = 0; j < playerHashMap.size(); j++) {
+            answer[j] = getKeyFromValue(playerHashMap, j);
         }
         return answer;
-    }
-
-    public static int getIdx(String[] arr, String target){
-        for (int i = 0; i < arr.length; i++) {
-            if(arr[i].equals(target)){
-                return i;
-            }
-        }
-        return -1;
     }
 }
 public class _69달리기_ {
     public static void main(String[] args) {
         /*players	                                callings	                    result
          ["mumu", "soe", "poe", "kai", "mine"]	    ["kai", "kai", "mine", "mine"]	["mumu", "kai", "mine", "soe", "poe"]*/
+/*
+        [mumu, kai, soe, poe, mine]
+*/
+
         String[] players = {"mumu", "soe", "poe", "kai", "mine"};
         String[] callings = {"kai", "kai", "mine", "mine"};
         String[] answer = Solution69.solution(players,callings);
